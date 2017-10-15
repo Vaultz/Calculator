@@ -6,7 +6,11 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+
 public class MainActivity extends AppCompatActivity {
+
+    static int countingInputs = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,7 +36,15 @@ public class MainActivity extends AppCompatActivity {
         final Button buttonTimes = (Button)findViewById(R.id.buttonTimes);
         final Button buttonDivide = (Button)findViewById(R.id.buttonDivide);
         final Button buttonEquals = (Button)findViewById(R.id.buttonEquals);
+        final Button buttonClear = (Button)findViewById(R.id.buttonC);
 
+        final ArrayList<String> numbers = new ArrayList<String>();
+        final ArrayList<String> operands = new ArrayList<String>();
+
+
+        numbers.add("0");
+
+        // NUMBERS
         buttons[0] = button0;
         buttons[1] = button1;
         buttons[2] = button2;
@@ -43,37 +55,88 @@ public class MainActivity extends AppCompatActivity {
         buttons[7] = button7;
         buttons[8] = button8;
         buttons[9] = button9;
+
+        int i = 0;
+        while (i < 9) {
+            final int j = i;
+            buttons[j].setOnClickListener(new View.OnClickListener() {
+
+                public void onClick(View v) {
+                    String buttonValue = String.valueOf(buttons[j].getText());
+
+                    // Model
+                    numbers.set(countingInputs, numbers.get(countingInputs)+buttonValue);
+
+                    // View
+                    TextView resultView = (TextView) findViewById(R.id.result);
+                    String result = String.valueOf(resultView.getText());
+
+                    if (result == "0") {
+                        resultView.setText(buttonValue);
+                    }
+                    else {
+                        resultView.setText(resultView.getText()+buttonValue);
+                    }
+
+                }
+            });
+            i++;
+        }
+
+        // OPERANDS
         buttons[10] = buttonPoint;
         buttons[11] = buttonPlus;
         buttons[12] = buttonMinus;
         buttons[13] = buttonTimes;
         buttons[14] = buttonDivide;
         buttons[15] = buttonEquals;
+        buttons[16] = buttonClear;
 
-        for (int i = 0 ; i < buttons.length-1 ; i++) {
+        while (i < 14) {
             final int j = i;
             buttons[j].setOnClickListener(new View.OnClickListener() {
 
                 public void onClick(View v) {
+                    String buttonValue = String.valueOf(buttons[j].getText());
+
+                    // Model
+                    operands.add(buttonValue);
+                    numbers.add("0");
+                    countingInputs++;
+
+                    // View
                     TextView resultView = (TextView) findViewById(R.id.result);
+                    String result = String.valueOf(resultView.getText());
 
-                    String resultNumber = String.valueOf(resultView.getText());
+                    // getting the input
+                    String lastChar = result.substring(result.length() - 1);
 
-                    if (resultNumber == "0") {
-                        resultView.setText(String.valueOf(buttons[j].getText()));
+                    // last input is a number : register the number + the operand
+                    if (isInteger(lastChar)) {
+                        numbers.add(result);
                     }
-                    else {
-                        resultView.setText(resultView.getText()+String.valueOf(buttons[j].getText()));
-                    }
-
                 }
             });
+            i++;
         }
-
-        final Button buttonC = (Button)findViewById(R.id.buttonC);
-
-
-
-
     }
-}
+
+        public static boolean isInteger(String s) {
+            boolean isValidInteger = false;
+            try
+            {
+                Integer.parseInt(s);
+
+                // s is a valid integer
+
+                isValidInteger = true;
+            }
+            catch (NumberFormatException ex)
+            {
+                // s is not an integer
+            }
+
+            return isValidInteger;
+        }
+    }
+
