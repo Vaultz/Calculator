@@ -23,6 +23,10 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        operand = "";
+        leftValue = "";
+        rightValue = "";
+
 
         cleanResult = false;
         // FIGURES
@@ -111,6 +115,7 @@ public class MainActivity extends AppCompatActivity {
             operandButtons[j].setOnClickListener(new View.OnClickListener() {
 
                 public void onClick(View v) {
+                cleanResult = false;
                 String buttonValue = String.valueOf(operandButtons[j].getText());
 
                 // View
@@ -138,16 +143,29 @@ public class MainActivity extends AppCompatActivity {
                 try
                 {
                     Double.parseDouble(result);
-                }
-                catch(NumberFormatException e)
-                {
-                    //not a double
-                    rightValue = result.replace(leftValue, "");
-                    rightValue = rightValue.replace(operand, "");
+
+                } catch(NumberFormatException e) {
+
+                    boolean rightValueFound = false;
+                    for (int i = 0 ; i < result.length() ; i++) {
+                        if (!rightValueFound) {
+                            if (!(Character.isDigit(result.charAt(i))) && (result.charAt(i) != '.')) {
+                                Log.v("FOUND CHAR", ""+result.charAt(i));
+                                rightValueFound = true;
+                            }
+                        }
+                        else {
+                            rightValue += result.charAt(i);
+                        }
+                    }
 
                     double doubleResult = 0;
-                    double leftDouble = Double.parseDouble(leftValue);
-                    double rightDouble = Double.parseDouble(rightValue);
+                    double leftDouble;
+                    double rightDouble;
+
+                   // Log.v("Value of result :"+result, " // Value of leftValue : "+leftValue+" // Value of rightValue :"+rightValue);
+                    leftDouble = Double.parseDouble(leftValue);
+                    rightDouble = Double.parseDouble(rightValue);
 
                     switch (operand) {
                         case "+":
@@ -165,11 +183,12 @@ public class MainActivity extends AppCompatActivity {
                         case "/":
                             doubleResult = leftDouble/rightDouble;
                             break;
-                        
+
                     }
 
                     resultView.setText(String.valueOf(doubleResult));
-
+                    leftValue = String.valueOf(doubleResult);
+                    rightValue = "";
                     cleanResult = true;
 
                 }
@@ -177,6 +196,20 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+
+
+    }
+
+    private double tryParseDouble(String number) {
+        if (number != null && number.length() > 0) {
+            try {
+                return Double.parseDouble(number);
+            }
+            catch(Exception e) {
+                return 0;
+            }
+        }
+        else return 0;
     }
 
 
