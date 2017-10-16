@@ -133,6 +133,28 @@ public class MainActivity extends AppCompatActivity {
             i++;
         }
 
+        buttonPoint.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                TextView resultView = (TextView) findViewById(R.id.result);
+                String result = String.valueOf(resultView.getText());
+
+                if (result.charAt(result.length()-1) != '.') {
+                    resultView.setText(resultView.getText()+".");
+                }
+            }
+        });
+
+        buttonClear.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                TextView resultView = (TextView) findViewById(R.id.result);
+                String result = String.valueOf(resultView.getText());
+                resultView.setText("0");
+                operand = "";
+                leftValue = "";
+                rightValue = "";
+                cleanResult = false;
+            }
+        });
 
         buttonEquals.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -195,8 +217,6 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
-
-
 
     }
 
